@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import localReducers from './local-reducers';
 import { destroy, update } from './actions';
+import createTakeLocalSaga from './take-local-saga';
 
 /**
  * A decorator function that connects the provided component to local state
@@ -101,7 +102,12 @@ const localHOC = (config, WrappedComponent) => {
 
         // run only after the local state was initialized
         if (newConfig.saga) {
-          this.runningSaga = sagaMiddleware.run(newConfig.saga, this.createPropsObject());
+          this.runningSaga = sagaMiddleware.run(newConfig.saga,
+						this.createPropsObject({
+							// also pass takeLocal generator function configured to the namespace
+							takeLocal: createTakeLocalSaga(newConfig.ns)
+						})
+					);
         }
 			}
 		}
@@ -116,7 +122,7 @@ const localHOC = (config, WrappedComponent) => {
 			);
 		};
 
-		createPropsObject() {
+		createPropsObject(additionalProps = {}) {
 			const { store } = this.context;
       const state = store.getState();
 
@@ -127,7 +133,8 @@ const localHOC = (config, WrappedComponent) => {
 				update: this.update,
 				reset: this.reset,
 				$: this.$,
-				dispatch: store.dispatch
+				dispatch: store.dispatch,
+				...additionalProps
 			};
 		}
 
