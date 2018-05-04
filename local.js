@@ -117,7 +117,8 @@ const localHOC = (config, WrappedComponent) => {
 		};
 
 		createPropsObject() {
-      const state = this.context.store.getState();
+			const { store } = this.context;
+      const state = store.getState();
 
 			return {
 				...this.props,
@@ -125,7 +126,8 @@ const localHOC = (config, WrappedComponent) => {
 				ns: this.config.ns,
 				update: this.update,
 				reset: this.reset,
-				localDispatch: this.localDispatch
+				$: this.$,
+				dispatch: store.dispatch
 			};
 		}
 
@@ -142,12 +144,10 @@ const localHOC = (config, WrappedComponent) => {
 			this.update(state, true);
 		};
 
-		localDispatch = action => {
-      this.context.store.dispatch({
-        ...action,
-        ns: this.config.ns
-      });
-    };
+		$ = action => ({
+			...action,
+			ns: this.config.ns
+		});
 
 		componentWillUnmount() {
 			const { persist, reducer, ns } = this.config;
