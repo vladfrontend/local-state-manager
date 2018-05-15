@@ -64,8 +64,8 @@ const localHOC = (config, WrappedComponent) => {
 
 			// adjust ns
 			if (typeof config.ns === 'function' && config.ns !== null) {
-        newConfig.ns = config.ns(this.props);
-      }
+				newConfig.ns = config.ns(this.props);
+			}
 			if (newConfig.ns === undefined) {
 				newConfig.ns = WrappedComponent.displayName || WrappedComponent.name || Math.random().toString();
 			}
@@ -80,6 +80,10 @@ const localHOC = (config, WrappedComponent) => {
 				newConfig.state = config.reducer(undefined, {});
 			}
 
+			if (!config.reducer) {
+				newConfig.reducer = state => state;
+			}
+
 			// make it available for future access
 			this.config = newConfig;
 
@@ -90,25 +94,23 @@ const localHOC = (config, WrappedComponent) => {
 			// otherwise initialize it and etc.
 			if (state.local[newConfig.ns] === undefined) {
 
-        if (newConfig.reducer) {
-          localReducers.add(
-            newConfig.ns,
-            newConfig.reducer
-          );
-        }
+				localReducers.add(
+					newConfig.ns,
+					newConfig.reducer
+				);
 
-        // initialize the local state -- dispatch the action
-        this.reset();
+				// initialize the local state -- dispatch the action
+				this.reset();
 
-        // run only after the local state was initialized
-        if (newConfig.saga) {
-          this.runningSaga = sagaMiddleware.run(newConfig.saga,
+				// run only after the local state was initialized
+				if (newConfig.saga) {
+					this.runningSaga = sagaMiddleware.run(newConfig.saga,
 						this.createPropsObject({
 							// also pass takeLocal generator function configured to the namespace
 							takeLocal: createTakeLocalSaga(newConfig.ns)
 						})
 					);
-        }
+				}
 			}
 		}
 
@@ -124,7 +126,7 @@ const localHOC = (config, WrappedComponent) => {
 
 		createPropsObject(additionalProps = {}) {
 			const { store } = this.context;
-      const state = store.getState();
+			const state = store.getState();
 
 			return {
 				...this.props,
@@ -141,12 +143,12 @@ const localHOC = (config, WrappedComponent) => {
 		reset = () => {
 			const state =
 				typeof this.config.state === 'function' ?
-				// recalculate state on every reset if state is a function
-				this.config.state(
-					this.context.store.getState(),
-					this.props
-				) :
-				this.config.state;
+					// recalculate state on every reset if state is a function
+					this.config.state(
+						this.context.store.getState(),
+						this.props
+					) :
+					this.config.state;
 
 			this.update(state, true);
 		};
@@ -176,7 +178,7 @@ const localHOC = (config, WrappedComponent) => {
 		render() {
 			const props = this.createPropsObject();
 
-      //return the wrapped component only when the local state is ready for consumption
+			//return the wrapped component only when the local state is ready for consumption
 			if (props.state === undefined) return null;
 			return (
 				<ConnectedWrappedComponent
