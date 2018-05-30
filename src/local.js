@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import localReducers from './local-reducers';
 import $ from './action-enhancer';
 import { destroy, update } from './actions';
-import createTakeLocalSaga from './take-local-saga';
+import enhanceTake from './take-enhancer';
 
 /**
  * A decorator function that connects the provided component to local state
@@ -107,8 +107,8 @@ const localHOC = (config, WrappedComponent) => {
 				if (newConfig.saga) {
 					this.runningSaga = sagaMiddleware.run(newConfig.saga,
 						this.createPropsObject({
-							// also pass takeLocal generator function configured to the namespace
-							takeLocal: createTakeLocalSaga(newConfig.ns)
+							// also pass take effect configured to the namespace
+							take: enhanceTake('ns', newConfig.ns)
 						})
 					);
 				}
