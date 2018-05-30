@@ -12,10 +12,7 @@ const firewall = ns => firewallHOR.bind(null, ns);
 
 const firewallHOR = (ns, reducer) =>
 	(state, action) =>
-		(
-			(action.ns === undefined) ||
-			(action.ns !== undefined && ns === action.ns)
-		)	?
+		(!action.ns || action.ns === ns) ?
 			reducer(state, action) :
 			state;
 
