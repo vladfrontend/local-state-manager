@@ -7,7 +7,7 @@ const meetsRules = (rules, action) =>
 	);
 
 function Take(rules = []) {
-	const take = actionType =>
+	const _take = actionType =>
 		call(function* () {
 			while (true) {
 				const action = yield take(actionType);
@@ -23,7 +23,7 @@ function Take(rules = []) {
 				rules.concat({ key, value })
 			);
 		} else {
-			return take(...arguments);
+			return _take(...arguments);
 		}
 	};
 }

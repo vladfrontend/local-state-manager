@@ -5,7 +5,7 @@ function ActionEnhancer(addObj = {}) {
 	return function(key, value) {
 		if (typeof key === 'string') {
 			return new ActionEnhancer(
-				Object.assign({}, addObj, { key, value })
+				Object.assign({}, addObj, { [key]: value })
 			);
 		} else {
 			return action(...arguments);
