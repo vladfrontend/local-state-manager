@@ -154,7 +154,7 @@ const localHOC = (config, WrappedComponent) => {
 			this.update(state, true);
 		};
 
-		$ = $('ns', this.config.ns);
+		$ = (...args) => $('ns', this.config.ns)(...args);
 
 		componentWillUnmount() {
 			const { persist, reducer, ns } = this.config;
