@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import localReducers from './local-reducers';
+import $ from './action-enhancer';
 import { destroy, update } from './actions';
 import createTakeLocalSaga from './take-local-saga';
 
@@ -153,10 +154,7 @@ const localHOC = (config, WrappedComponent) => {
 			this.update(state, true);
 		};
 
-		$ = action => ({
-			...action,
-			ns: this.config.ns
-		});
+		$ = $('ns', this.config.ns);
 
 		componentWillUnmount() {
 			const { persist, reducer, ns } = this.config;
