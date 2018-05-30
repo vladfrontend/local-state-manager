@@ -4,7 +4,7 @@ function ActionEnhancer(addObj = {}) {
 
 	return function(key, value) {
 		if (typeof key === 'string') {
-			return new ExtendableAction(
+			return new ActionEnhancer(
 				Object.assign({}, addObj, { key, value })
 			);
 		} else {
